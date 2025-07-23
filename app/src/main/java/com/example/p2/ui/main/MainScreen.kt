@@ -1,11 +1,13 @@
 package com.example.p2.ui.main
 
 import android.content.Intent
+import android.os.Build
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Toast
+import com.example.p2.ui.main.MotionDetectionService
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -33,6 +35,8 @@ fun MainScreen() {
     val context = LocalContext.current
     var ipAddress by remember { mutableStateOf("http://192.168.4.1") }
     var webView: WebView? by remember { mutableStateOf(null) }
+    var monitoring by remember { mutableStateOf(false) }
+
 
     Column(
         modifier = Modifier
@@ -75,10 +79,32 @@ fun MainScreen() {
                 Text(stringResource(R.string.capture))
             }
             Button(onClick = {
-                context.startActivity(Intent(context, SettingsActivity::class.java))
+
+                context.startActivity(
+                    Intent(context, SettingsActivity::class.java).putExtra("ip", ipAddress)
+                )
             }) {
                 Text(stringResource(R.string.settings))
             }
+            Button(onClick = {
+                monitoring = !monitoring
+                val intent = Intent(context, MotionDetectionService::class.java).putExtra("ip", ipAddress)
+                if (monitoring) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        context.startForegroundService(intent)
+                    } else {
+                        context.startService(intent)
+                    }
+                } else {
+                    context.stopService(intent)
+                }
+            }) {
+                Text(
+                    if (monitoring) stringResource(R.string.stop_monitoring)
+                    else stringResource(R.string.start_monitoring)
+                )
+            }
+
         }
     }
 }
