@@ -1,5 +1,6 @@
 package com.example.p2.ui.login
 
+
 import android.content.Context
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
@@ -23,14 +24,19 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
+
+
+
 import com.example.p2.R
 
 @Composable
 fun LoginScreen(onLoginSuccess: () -> Unit) {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+
     val context = LocalContext.current
     val prefs = remember { context.getSharedPreferences("credentials", Context.MODE_PRIVATE) }
+
 
     Column(
         modifier = Modifier
@@ -54,6 +60,7 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
         )
         Spacer(modifier = Modifier.height(24.dp))
         val loginEnabled = username.isNotBlank() && password.isNotBlank()
+
         Row(
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
@@ -86,6 +93,6 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
             ) {
                 Text(text = stringResource(R.string.register))
             }
-        }
+        } 
     }
 }

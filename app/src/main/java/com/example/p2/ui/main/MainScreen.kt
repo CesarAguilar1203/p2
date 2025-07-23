@@ -37,6 +37,7 @@ fun MainScreen() {
     var webView: WebView? by remember { mutableStateOf(null) }
     var monitoring by remember { mutableStateOf(false) }
 
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -78,6 +79,7 @@ fun MainScreen() {
                 Text(stringResource(R.string.capture))
             }
             Button(onClick = {
+
                 context.startActivity(
                     Intent(context, SettingsActivity::class.java).putExtra("ip", ipAddress)
                 )
@@ -102,6 +104,7 @@ fun MainScreen() {
                     else stringResource(R.string.start_monitoring)
                 )
             }
+
         }
     }
 }

@@ -19,6 +19,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -34,14 +35,18 @@ import java.net.HttpURLConnection
 import java.net.URL
 import kotlin.concurrent.thread
 
+
 class SettingsActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         val ipAddress = intent.getStringExtra("ip") ?: ""
+
         enableEdgeToEdge()
         setContent {
             P2Theme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { _ ->
+
                     SettingsScreen(ipAddress = ipAddress)
                 }
             }
@@ -136,5 +141,6 @@ private fun sendSetting(ip: String, variable: String, value: Int) {
             conn.disconnect()
         } catch (_: Exception) {
         }
+
     }
 }
