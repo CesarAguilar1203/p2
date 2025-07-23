@@ -27,6 +27,11 @@
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.P2" />
+        <activity
+            android:name=".ui.settings.SettingsActivity"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.P2" />
     </application>
 
 </manifest>
