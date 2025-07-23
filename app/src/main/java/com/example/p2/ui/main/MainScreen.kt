@@ -33,7 +33,7 @@ import com.example.p2.ui.settings.SettingsActivity
 @Composable
 fun MainScreen() {
     val context = LocalContext.current
-    var ipAddress by remember { mutableStateOf("http://192.168.4.1") }
+    var ipAddress by remember { mutableStateOf("http://172.16.1.95") }
     var webView: WebView? by remember { mutableStateOf(null) }
     var monitoring by remember { mutableStateOf(false) }
 

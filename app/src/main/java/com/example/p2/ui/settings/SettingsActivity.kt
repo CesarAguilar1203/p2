@@ -35,7 +35,6 @@ import java.net.HttpURLConnection
 import java.net.URL
 import kotlin.concurrent.thread
 
-
 class SettingsActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,7 +45,6 @@ class SettingsActivity : ComponentActivity() {
         setContent {
             P2Theme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { _ ->
-
                     SettingsScreen(ipAddress = ipAddress)
                 }
             }
@@ -54,6 +52,7 @@ class SettingsActivity : ComponentActivity() {
     }
 }
 
+@OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(ipAddress: String) {
     val context = LocalContext.current
@@ -141,6 +140,5 @@ private fun sendSetting(ip: String, variable: String, value: Int) {
             conn.disconnect()
         } catch (_: Exception) {
         }
-
     }
 }
