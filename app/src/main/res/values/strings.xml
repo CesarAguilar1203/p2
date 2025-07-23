@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">p2</string>
+    <string name="username">Usuario</string>
+    <string name="password">Contraseña</string>
+    <string name="login">Iniciar sesión</string>
+    <string name="ip_address">Dirección IP</string>
+    <string name="capture">Capturar</string>
+    <string name="capture_done">Captura realizada</string>
+    <string name="settings">Configuraciones</string>
 </resources>
