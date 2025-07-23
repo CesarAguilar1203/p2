@@ -22,7 +22,7 @@ import androidx.compose.ui.res.stringResource
 import com.example.p2.R
 
 @Composable
-fun LoginScreen() {
+fun LoginScreen(onLoginSuccess: () -> Unit) {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
@@ -47,9 +47,15 @@ fun LoginScreen() {
             modifier = Modifier.fillMaxWidth()
         )
         Spacer(modifier = Modifier.height(24.dp))
+        val loginEnabled = username.isNotBlank() && password.isNotBlank()
         Button(
-            onClick = { /* TODO: handle login */ },
-            modifier = Modifier.fillMaxWidth()
+            onClick = {
+                if (loginEnabled) {
+                    onLoginSuccess()
+                }
+            },
+            modifier = Modifier.fillMaxWidth(),
+            enabled = loginEnabled
         ) {
             Text(text = stringResource(R.string.login))
         }
