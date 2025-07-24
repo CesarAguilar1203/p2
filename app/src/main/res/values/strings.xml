@@ -12,9 +12,10 @@
     <string name="login_failed">Credenciales incorrectas</string>
     <string name="resolution">Resolución</string>
     <string name="quality">Calidad</string>
-    <string name="brightness">Brillo</string>
+    <string name="face_detect">Detección de rostro</string>
     <string name="apply">Aplicar</string>
     <string name="settings_sent">Configuración enviada</string>
     <string name="monitoring">Monitoreando intrusos</string>
     <string name="intruder_detected">INTRUSO DETECTADO</string>
 </resources>
+
