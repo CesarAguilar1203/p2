@@ -6,6 +6,7 @@
     <string name="ip_address">Dirección IP</string>
     <string name="capture">Capturar</string>
     <string name="capture_done">Captura realizada</string>
+    <string name="resume_stream">Ver stream</string>
     <string name="settings">Configuraciones</string>
     <string name="register">Registrar</string>
     <string name="register_success">Registro guardado</string>
