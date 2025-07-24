@@ -16,9 +16,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.p2.R
 import com.example.p2.ui.theme.P2Theme
-import java.net.HttpURLConnection
-import java.net.URL
-import kotlin.concurrent.thread
 
 class SettingsActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -123,22 +120,6 @@ fun SettingsScreen(ipAddress: String) {
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(stringResource(R.string.apply))
-        }
-    }
-}
-
-private fun sendSetting(ip: String, variable: String, value: Int) {
-    if (ip.isBlank()) return
-    thread {
-        try {
-            val url = URL("$ip/control?var=$variable&val=$value")
-            val conn = url.openConnection() as HttpURLConnection
-            conn.requestMethod = "GET"
-            conn.connectTimeout = 2000
-            conn.connect()
-            conn.inputStream.close()
-            conn.disconnect()
-        } catch (_: Exception) {
         }
     }
 }

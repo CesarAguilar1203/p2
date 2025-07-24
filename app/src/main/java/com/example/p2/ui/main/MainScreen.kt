@@ -12,6 +12,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CameraAlt
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -64,6 +65,9 @@ fun MainScreen() {
                         }
                     }) {
                         Icon(Icons.Default.CameraAlt, contentDescription = stringResource(R.string.capture))
+                    }
+                    IconButton(onClick = { capturedBitmap = null }) {
+                        Icon(Icons.Default.Refresh, contentDescription = stringResource(R.string.resume_stream))
                     }
                     IconButton(onClick = {
                         context.startActivity(
