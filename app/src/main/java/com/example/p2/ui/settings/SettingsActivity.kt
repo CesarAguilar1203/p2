@@ -1,33 +1,15 @@
 package com.example.p2.ui.settings
 
-
 import android.content.Context
-
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.ExposedDropdownMenuDefaults
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Slider
-import androidx.compose.material3.Text
-import androidx.compose.material3.Surface
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -42,9 +24,6 @@ class SettingsActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val ipAddress = intent.getStringExtra("ip") ?: ""
-
-
-
         enableEdgeToEdge()
         setContent {
             P2Theme {
@@ -56,14 +35,14 @@ class SettingsActivity : ComponentActivity() {
     }
 }
 
-@OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(ipAddress: String) {
     val context = LocalContext.current
     val prefs = remember { context.getSharedPreferences("settings", Context.MODE_PRIVATE) }
     var ip by remember { mutableStateOf(ipAddress) }
-
     var expanded by remember { mutableStateOf(false) }
+
     val resolutions = listOf(
         "QVGA" to 4,
         "VGA" to 6,
@@ -78,7 +57,8 @@ fun SettingsScreen(ipAddress: String) {
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         OutlinedTextField(
             value = ip,
@@ -87,7 +67,7 @@ fun SettingsScreen(ipAddress: String) {
                 prefs.edit().putString("ip", it).apply()
             },
             label = { Text(stringResource(R.string.ip_address)) },
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth()
         )
 
         ExposedDropdownMenuBox(
@@ -121,8 +101,7 @@ fun SettingsScreen(ipAddress: String) {
         Slider(
             value = quality,
             onValueChange = { quality = it },
-            valueRange = 10f..63f,
-            steps = 0
+            valueRange = 10f..63f
         )
 
         Text(stringResource(R.string.brightness))
@@ -139,7 +118,6 @@ fun SettingsScreen(ipAddress: String) {
                 sendSetting(ip, "framesize", selectedRes.second)
                 sendSetting(ip, "quality", quality.toInt())
                 sendSetting(ip, "brightness", brightness.toInt())
-
                 Toast.makeText(context, context.getString(R.string.settings_sent), Toast.LENGTH_SHORT).show()
             },
             modifier = Modifier.fillMaxWidth()
@@ -148,7 +126,6 @@ fun SettingsScreen(ipAddress: String) {
         }
     }
 }
-
 
 private fun sendSetting(ip: String, variable: String, value: Int) {
     if (ip.isBlank()) return
@@ -165,3 +142,4 @@ private fun sendSetting(ip: String, variable: String, value: Int) {
         }
     }
 }
+
