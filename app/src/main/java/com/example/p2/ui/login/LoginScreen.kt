@@ -29,8 +29,10 @@ import com.example.p2.R
 fun LoginScreen(onLoginSuccess: () -> Unit) {
     var username by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+
     val context = LocalContext.current
     val prefs = remember { context.getSharedPreferences("credentials", Context.MODE_PRIVATE) }
+
 
     Column(
         modifier = Modifier
@@ -86,6 +88,8 @@ fun LoginScreen(onLoginSuccess: () -> Unit) {
             ) {
                 Text(text = stringResource(R.string.register))
             }
+
         }
+
     }
 }

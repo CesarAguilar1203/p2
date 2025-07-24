@@ -7,6 +7,7 @@
     <string name="capture">Capturar</string>
     <string name="capture_done">Captura realizada</string>
     <string name="settings">Configuraciones</string>
+
     <string name="register">Registrar</string>
     <string name="register_success">Registro guardado</string>
     <string name="login_failed">Credenciales incorrectas</string>
@@ -20,3 +21,5 @@
     <string name="monitoring">Monitoreando intrusos</string>
     <string name="intruder_detected">INTRUSO DETECTADO</string>
 </resources>
+
+

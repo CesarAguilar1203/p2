@@ -1,47 +1,37 @@
 package com.example.p2.ui.main
 
-import android.content.Intent
 import android.content.Context
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleEventObserver
-import androidx.compose.ui.platform.LocalLifecycleOwner
-import androidx.compose.runtime.DisposableEffect
-import android.os.Build
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.os.Build
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.Toast
 import androidx.compose.foundation.Image
-import com.example.p2.ui.main.MotionDetectionService
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.compose.ui.graphics.asImageBitmap
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import com.example.p2.R
 import com.example.p2.ui.settings.SettingsActivity
+import com.example.p2.ui.main.MotionDetectionService
+import androidx.compose.ui.layout.matchParentSize
 
 @Composable
 fun MainScreen() {
     val context = LocalContext.current
     val prefs = remember { context.getSharedPreferences("settings", Context.MODE_PRIVATE) }
     var ipAddress by remember { mutableStateOf(prefs.getString("ip", "http://192.168.4.1") ?: "http://192.168.4.1") }
+
     val lifecycleOwner = LocalLifecycleOwner.current
     DisposableEffect(lifecycleOwner) {
         val observer = LifecycleEventObserver { _, event ->
@@ -52,6 +42,7 @@ fun MainScreen() {
         lifecycleOwner.lifecycle.addObserver(observer)
         onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
     }
+
     var webView: WebView? by remember { mutableStateOf(null) }
     var monitoring by remember { mutableStateOf(false) }
     var capturedBitmap by remember { mutableStateOf<Bitmap?>(null) }
@@ -71,18 +62,20 @@ fun MainScreen() {
             label = { Text(stringResource(R.string.ip_address)) },
             modifier = Modifier.fillMaxWidth()
         )
-        androidx.compose.foundation.layout.Box(
+
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f)
         ) {
             AndroidView(
                 factory = { ctx ->
-                    WebView(ctx).apply {
+                    val wv = WebView(ctx).apply {
                         webViewClient = WebViewClient()
                         settings.javaScriptEnabled = true
-                        webView = this
                     }
+                    webView = wv
+                    wv
                 },
                 update = { view ->
                     view.loadUrl(ipAddress)
@@ -97,6 +90,7 @@ fun MainScreen() {
                 )
             }
         }
+
         Row(
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
@@ -111,6 +105,7 @@ fun MainScreen() {
             }) {
                 Text(stringResource(R.string.capture))
             }
+
             Button(onClick = {
                 context.startActivity(
                     Intent(context, SettingsActivity::class.java).putExtra("ip", ipAddress)
@@ -118,9 +113,11 @@ fun MainScreen() {
             }) {
                 Text(stringResource(R.string.settings))
             }
+
             Button(onClick = {
                 monitoring = !monitoring
-                val intent = Intent(context, MotionDetectionService::class.java).putExtra("ip", ipAddress)
+                val intent = Intent(context, MotionDetectionService::class.java)
+                    .putExtra("ip", ipAddress)
                 if (monitoring) {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                         context.startForegroundService(intent)
@@ -139,3 +136,4 @@ fun MainScreen() {
         }
     }
 }
+
