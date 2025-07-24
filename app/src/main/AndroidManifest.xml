@@ -36,11 +36,9 @@
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.P2" />
-
         <service
             android:name=".ui.main.MotionDetectionService"
             android:exported="false" />
-
 
     </application>
 

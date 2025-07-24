@@ -1,5 +1,8 @@
 package com.example.p2.ui.settings
 
+
+import android.content.Context
+
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
@@ -38,8 +41,9 @@ import kotlin.concurrent.thread
 class SettingsActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         val ipAddress = intent.getStringExtra("ip") ?: ""
+
+
 
         enableEdgeToEdge()
         setContent {
@@ -56,6 +60,9 @@ class SettingsActivity : ComponentActivity() {
 @Composable
 fun SettingsScreen(ipAddress: String) {
     val context = LocalContext.current
+    val prefs = remember { context.getSharedPreferences("settings", Context.MODE_PRIVATE) }
+    var ip by remember { mutableStateOf(ipAddress) }
+
     var expanded by remember { mutableStateOf(false) }
     val resolutions = listOf(
         "QVGA" to 4,
@@ -73,6 +80,16 @@ fun SettingsScreen(ipAddress: String) {
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
+        OutlinedTextField(
+            value = ip,
+            onValueChange = {
+                ip = it
+                prefs.edit().putString("ip", it).apply()
+            },
+            label = { Text(stringResource(R.string.ip_address)) },
+            modifier = Modifier.fillMaxWidth(),
+        )
+
         ExposedDropdownMenuBox(
             expanded = expanded,
             onExpandedChange = { expanded = !expanded }
@@ -99,6 +116,7 @@ fun SettingsScreen(ipAddress: String) {
                 }
             }
         }
+
         Text(stringResource(R.string.quality))
         Slider(
             value = quality,
@@ -106,6 +124,7 @@ fun SettingsScreen(ipAddress: String) {
             valueRange = 10f..63f,
             steps = 0
         )
+
         Text(stringResource(R.string.brightness))
         Slider(
             value = brightness,
@@ -113,11 +132,14 @@ fun SettingsScreen(ipAddress: String) {
             valueRange = -2f..2f,
             steps = 4
         )
+
         Button(
             onClick = {
-                sendSetting(ipAddress, "framesize", selectedRes.second)
-                sendSetting(ipAddress, "quality", quality.toInt())
-                sendSetting(ipAddress, "brightness", brightness.toInt())
+                prefs.edit().putString("ip", ip).apply()
+                sendSetting(ip, "framesize", selectedRes.second)
+                sendSetting(ip, "quality", quality.toInt())
+                sendSetting(ip, "brightness", brightness.toInt())
+
                 Toast.makeText(context, context.getString(R.string.settings_sent), Toast.LENGTH_SHORT).show()
             },
             modifier = Modifier.fillMaxWidth()
@@ -126,6 +148,7 @@ fun SettingsScreen(ipAddress: String) {
         }
     }
 }
+
 
 private fun sendSetting(ip: String, variable: String, value: Int) {
     if (ip.isBlank()) return
