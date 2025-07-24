@@ -6,35 +6,19 @@ import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExposedDropdownMenuBox
-import androidx.compose.material3.ExposedDropdownMenuDefaults
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Slider
-import androidx.compose.material3.Switch
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.foundation.layout.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.dp
 import com.example.p2.R
 import com.example.p2.ui.theme.P2Theme
+import java.net.HttpURLConnection
+import java.net.URL
+import kotlin.concurrent.thread
 
 class SettingsActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,12 +35,14 @@ class SettingsActivity : ComponentActivity() {
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(ipAddress: String) {
     val context = LocalContext.current
     val prefs = remember { context.getSharedPreferences("settings", Context.MODE_PRIVATE) }
     var ip by remember { mutableStateOf(ipAddress) }
     var expanded by remember { mutableStateOf(false) }
+
     val resolutions = listOf(
         "QVGA" to 4,
         "VGA" to 6,
@@ -65,13 +51,13 @@ fun SettingsScreen(ipAddress: String) {
     )
     var selectedRes by remember { mutableStateOf(resolutions[2]) }
     var quality by remember { mutableStateOf(10f) }
-    var faceDetect by remember { mutableStateOf(false) }
+    var brightness by remember { mutableStateOf(0f) }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically),
+        verticalArrangement = Arrangement.spacedBy(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         OutlinedTextField(
@@ -81,8 +67,9 @@ fun SettingsScreen(ipAddress: String) {
                 prefs.edit().putString("ip", it).apply()
             },
             label = { Text(stringResource(R.string.ip_address)) },
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.fillMaxWidth()
         )
+
         ExposedDropdownMenuBox(
             expanded = expanded,
             onExpandedChange = { expanded = !expanded }
@@ -109,28 +96,28 @@ fun SettingsScreen(ipAddress: String) {
                 }
             }
         }
+
         Text(stringResource(R.string.quality))
         Slider(
             value = quality,
             onValueChange = { quality = it },
-            valueRange = 10f..63f,
+            valueRange = 10f..63f
         )
-        Row(
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(stringResource(R.string.face_detect))
-            Spacer(Modifier.weight(1f))
-            Switch(
-                checked = faceDetect,
-                onCheckedChange = { faceDetect = it }
-            )
-        }
+
+        Text(stringResource(R.string.brightness))
+        Slider(
+            value = brightness,
+            onValueChange = { brightness = it },
+            valueRange = -2f..2f,
+            steps = 4
+        )
+
         Button(
             onClick = {
                 prefs.edit().putString("ip", ip).apply()
                 sendSetting(ip, "framesize", selectedRes.second)
                 sendSetting(ip, "quality", quality.toInt())
-                sendSetting(ip, "face_detect", if (faceDetect) 1 else 0)
+                sendSetting(ip, "brightness", brightness.toInt())
                 Toast.makeText(context, context.getString(R.string.settings_sent), Toast.LENGTH_SHORT).show()
             },
             modifier = Modifier.fillMaxWidth()
@@ -139,3 +126,20 @@ fun SettingsScreen(ipAddress: String) {
         }
     }
 }
+
+private fun sendSetting(ip: String, variable: String, value: Int) {
+    if (ip.isBlank()) return
+    thread {
+        try {
+            val url = URL("$ip/control?var=$variable&val=$value")
+            val conn = url.openConnection() as HttpURLConnection
+            conn.requestMethod = "GET"
+            conn.connectTimeout = 2000
+            conn.connect()
+            conn.inputStream.close()
+            conn.disconnect()
+        } catch (_: Exception) {
+        }
+    }
+}
+
