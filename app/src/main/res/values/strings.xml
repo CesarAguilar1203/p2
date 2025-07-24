@@ -15,8 +15,6 @@
     <string name="brightness">Brillo</string>
     <string name="apply">Aplicar</string>
     <string name="settings_sent">Configuración enviada</string>
-    <string name="start_monitoring">Comenzar monitoreo</string>
-    <string name="stop_monitoring">Detener monitoreo</string>
     <string name="monitoring">Monitoreando intrusos</string>
     <string name="intruder_detected">INTRUSO DETECTADO</string>
 </resources>
